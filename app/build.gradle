@@ -1,0 +1,51 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.yuxiaor.plugin.qiniu'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.yuxiaor.qnuploadplugin"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def type = variant.buildType.name
+            if (type == 'release') {
+                outputFileName = "${applicationId}_${versionName}_${versionCode}.apk"
+            } else {
+                outputFileName = "${variant.flavorName}_${type}_${versionCode}.apk"
+            }
+        }
+    }
+
+}
+
+QUpload {
+    uploadEnabled true
+    qiniu {
+        secretKey "qy7cbE7zWS4vNW4C1YMkvcDIrfquuNlWgP228wfG"
+        accessKey "fB80I_dmomwVj2g6vF_EA9iui041SbdyqFBVCt3i"
+        bucket "apartment"
+        fileDir buildDir.absolutePath + "${File.separator}outputs${File.separator}apk${File.separator}release"
+        dependsTask 'assembleRelease'
+        filter = ["*.apk"]
+    }
+}
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+    testImplementation 'junit:junit:4.13.1'
+}

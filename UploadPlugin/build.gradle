@@ -1,0 +1,27 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation 'com.qiniu:qiniu-java-sdk:7.4.0'//七牛云对象存储sdk
+}
+
+//设置maven deployer
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //设置插件的GAV参数
+            pom.groupId = 'com.yuxiaor.plugin'
+            pom.artifactId = 'qiniu'
+            pom.version = '1.0.0'
+            //文件发布到下面目录
+            repository(url: uri('../repo'))
+        }
+    }
+}
+
